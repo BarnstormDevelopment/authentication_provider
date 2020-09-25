@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'authentication_state.dart' as State;
 import 'authentication_state.dart';
 
+/// Manages the [AuthenticationProvider]
+///
+/// Contains the current [AuthenticationState] and streams for changes in data
 class AuthenticationController<T extends Object> {
-  T _user;
   State.AuthenticationState _state;
   BuildContext _context;
 
@@ -29,46 +31,29 @@ class AuthenticationController<T extends Object> {
     _stateStreamController.add(value);
   }
 
-  /// Current [T] of the app
-  ///
-  /// Will only be filled if passed in authenticate method
-  T get user => _user;
-  set user(T value) {
-    _user = value;
-    _userStreamController.add(value);
-  }
-
   Future<State.AuthenticationState> Function() _initialize;
 
   StreamController<AuthenticationState> _stateStreamController;
-  StreamController<T> _userStreamController;
 
   Stream _stateChanged;
-  Stream _userChanged;
 
   /// Streams a new [AuthenticationState] when the [state] is changed.
   Stream get stateChanged => _stateChanged;
-
-  /// Streams a new [T] when the [user] is changed.
-  Stream get userChanged => _userChanged;
 
   AuthenticationController(BuildContext context,
       {Future<State.AuthenticationState> Function() initialize,
       State.AuthenticationState initialState}) {
     _stateStreamController = StreamController();
-    _userStreamController = StreamController();
     state = initialState ?? State.Uninitialized();
     _initialize = initialize;
     _context = context;
     _stateChanged = _stateStreamController.stream.asBroadcastStream();
-    _userChanged = _userStreamController.stream.asBroadcastStream();
   }
 
   /// Should be called whenever the widget that created this [AuthenticationController]
   /// instance is disposed of.
   void dispose() {
     _stateStreamController.close();
-    _userStreamController.close();
   }
 
   /// Called the first time the widget loads

@@ -13,9 +13,6 @@ class AuthenticationProvider<T extends Object> extends InheritedWidget {
   AuthenticationState get state => controller.state;
   set state(AuthenticationState value) => controller.state = value;
 
-  T get user => controller.user;
-  set user(T value) => controller.user = value;
-
   final Widget Function(BuildContext context) builder;
 
   AuthenticationProvider(
@@ -48,7 +45,6 @@ class __AuthenticationWidgetState extends State<_AuthenticationWidget> {
     super.initState();
 
     widget.controller.stateChanged.listen((state) => setState(() {}));
-    widget.controller.userChanged.listen((user) => setState(() {}));
   }
 
   @override
