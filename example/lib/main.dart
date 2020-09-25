@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:authentication_provider/authentication_controller.dart';
+import 'package:authentication_provider/authentication_state.dart' as AuthState;
 import 'package:authentication_provider/authentication_provider.dart';
 
 void main() {
@@ -14,45 +14,77 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  AuthenticationController controller;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await AuthenticationProvider.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    controller = AuthenticationController<User>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
-    );
+        home: AuthenticationProvider<User>(
+            controller: controller,
+            builder: (context) {
+              var state = AuthenticationProvider.of<User>(context).state;
+              if (state is AuthState.Loading) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Loading'),
+                  ),
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (state is AuthState.Unauthenticated) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Unauthenticated'),
+                  ),
+                  body: Center(
+                    child: Column(children: [
+                      Text('Woops, you are not authenticated.'),
+                      FlatButton(
+                        child: Text('Sign In'),
+                        onPressed: () => controller.authenticate(user: User()),
+                      )
+                    ]),
+                  ),
+                );
+              } else if (state is AuthState.Authenticated<User>) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Authenticated'),
+                  ),
+                  body: Center(
+                    child: Column(children: [
+                      Text(
+                          'Congratulations, you (${state.user.name}) are authenticated.'),
+                      FlatButton(
+                        child: Text('Log Out'),
+                        onPressed: () => controller.deauthenticate(),
+                      )
+                    ]),
+                  ),
+                );
+              }
+              Future.delayed(Duration(seconds: 1), () {
+                controller.initialize();
+              });
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Uninitialized'),
+                ),
+                body: Center(
+                  child: Text(''),
+                ),
+              );
+            }));
   }
+}
+
+class User {
+  String name = 'Nathaniel';
 }

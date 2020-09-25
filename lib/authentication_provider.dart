@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'authentication_controller.dart';
 
+export 'package:authentication_provider/authentication_controller.dart';
+export 'package:authentication_provider/authentication_state.dart';
+
 /// Provides authenticationd data down the widget tree with a user type of [T]
-class AuthenticationProvider<T> extends InheritedWidget {
+class AuthenticationProvider<T extends Object> extends InheritedWidget {
   final AuthenticationController<T> controller;
 
   AuthenticationState get state => controller.state;
@@ -13,35 +16,43 @@ class AuthenticationProvider<T> extends InheritedWidget {
   T get user => controller.user;
   set user(T value) => controller.user = value;
 
-  final Widget Function(BuildContext context, AuthenticationState state)
-      builder;
+  final Widget Function(BuildContext context) builder;
 
   AuthenticationProvider(
       {@required this.controller, @required this.builder, Key key})
-      : super(child: _AuthenticationWidget(builder), key: key);
+      : super(child: _AuthenticationWidget(builder, controller), key: key);
 
   @override
   bool updateShouldNotify(AuthenticationProvider oldWidget) {
     return true;
   }
 
-  static AuthenticationProvider of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthenticationProvider>();
+  static AuthenticationProvider of<G>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<AuthenticationProvider<G>>();
   }
 }
 
 class _AuthenticationWidget extends StatefulWidget {
-  final Widget Function(BuildContext context, AuthenticationState state)
-      builder;
-  _AuthenticationWidget(this.builder);
+  final Widget Function(BuildContext context) builder;
+  final AuthenticationController controller;
+  _AuthenticationWidget(this.builder, this.controller);
+
   @override
   __AuthenticationWidgetState createState() => __AuthenticationWidgetState();
 }
 
 class __AuthenticationWidgetState extends State<_AuthenticationWidget> {
-  AuthenticationProvider get provider => AuthenticationProvider.of(context);
+  @override
+  void initState() {
+    super.initState();
+
+    widget.controller.stateChanged.listen((state) => setState(() {}));
+    widget.controller.userChanged.listen((user) => setState(() {}));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, provider.state);
+    return widget.builder(context);
   }
 }

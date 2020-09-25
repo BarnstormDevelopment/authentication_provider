@@ -9,7 +9,7 @@ packages:
     source: hosted
     version: "2.4.2"
   authentication_provider:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       path: ".."
       relative: true

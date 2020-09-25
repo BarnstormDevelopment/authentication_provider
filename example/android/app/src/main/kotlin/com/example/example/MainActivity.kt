@@ -1,4 +1,4 @@
-package dev.barnstorm.authentication_provider_example
+package com.example.example
 
 import io.flutter.embedding.android.FlutterActivity
 

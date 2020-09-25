@@ -1,6 +1,6 @@
-# authentication_provider_example
+# example
 
-Demonstrates how to use the authentication_provider plugin.
+A new Flutter project.
 
 ## Getting Started
 
