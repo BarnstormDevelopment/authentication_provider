@@ -23,7 +23,7 @@ class AuthenticationProvider<T extends Object> extends InheritedWidget {
     return true;
   }
 
-  static AuthenticationProvider? of<G extends Object>(BuildContext context) {
+  static AuthenticationProvider<G>? of<G extends Object>(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AuthenticationProvider<G>>();
   }
 }
