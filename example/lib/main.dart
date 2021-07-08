@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
                   body: Center(
                     child: Column(children: [
                       Text('Woops, you are not authenticated.'),
-                      FlatButton(
+                      TextButton(
                         child: Text('Sign In'),
                         onPressed: () => controller.authenticate(user: User()),
                       )
@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
                     child: Column(children: [
                       Text(
                           'Congratulations, you (${state.user.name}) are authenticated.'),
-                      FlatButton(
+                      TextButton(
                         child: Text('Log Out'),
                         onPressed: () => controller.deauthenticate(),
                       )
