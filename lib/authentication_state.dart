@@ -1,9 +1,11 @@
-class AuthenticationState {}
+class AuthenticationState {
+  const AuthenticationState();
+}
 
 class Authenticated<T extends Object> extends AuthenticationState {
   T user;
   dynamic data;
-  Authenticated({this.user, this.data});
+  Authenticated({required this.user, this.data});
 }
 
 class Unauthenticated extends AuthenticationState {
@@ -17,6 +19,5 @@ class Loading extends AuthenticationState {
 }
 
 class Uninitialized extends AuthenticationState {
-  dynamic data;
-  Uninitialized({this.data});
+  const Uninitialized();
 }

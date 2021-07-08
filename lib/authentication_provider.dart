@@ -15,8 +15,7 @@ class AuthenticationProvider<T extends Object> extends InheritedWidget {
 
   final Widget Function(BuildContext context) builder;
 
-  AuthenticationProvider(
-      {@required this.controller, @required this.builder, Key key})
+  AuthenticationProvider({required this.controller, required this.builder, Key? key})
       : super(child: _AuthenticationWidget(builder, controller), key: key);
 
   @override
@@ -24,9 +23,8 @@ class AuthenticationProvider<T extends Object> extends InheritedWidget {
     return true;
   }
 
-  static AuthenticationProvider of<G>(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<AuthenticationProvider<G>>();
+  static AuthenticationProvider? of<G extends Object>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<AuthenticationProvider<G>>();
   }
 }
 
